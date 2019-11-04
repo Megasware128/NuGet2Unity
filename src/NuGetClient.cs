@@ -27,13 +27,15 @@ namespace NuGet2Unity
 		private readonly ILogger _logger = NullLogger.Instance;
 		private readonly NuGetFramework _nuGetFramework;
 		private readonly ISettings _settings;
+		private readonly PackageSourceProvider _packageSourceProvider;
 		private readonly SourceRepositoryProvider _sourceRepositoryProvider;
 
 		public NuGetClient()
 		{
 			_nuGetFramework = NuGetFramework.ParseFolder("netstandard20");
 			_settings = Settings.LoadDefaultSettings(root: null);
-			_sourceRepositoryProvider = new SourceRepositoryProvider(_settings, Repository.Provider.GetCoreV3());
+			_packageSourceProvider = new PackageSourceProvider(_settings);
+			_sourceRepositoryProvider = new SourceRepositoryProvider(_packageSourceProvider, Repository.Provider.GetCoreV3());
 		}
 
 		public async Task<string> GetLatestVersionAsync(string packageId)
